@@ -4,181 +4,12 @@ import axios from "axios"
 const API = "http://localhost:8000"
 const categories = ["general", "passwords", "notes", "personal", "financial"]
 
-const s = {
-  app: {
-    minHeight: "100vh",
-    background: "#080808",
-    color: "#d0d0d0",
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    padding: "0",
-  },
-  sidebar: {
-    width: 220,
-    minHeight: "100vh",
-    background: "#0f0f0f",
-    borderRight: "1px solid #1a1a1a",
-    padding: "32px 0",
-    position: "fixed",
-    top: 0,
-    left: 0,
-  },
-  main: {
-    marginLeft: 220,
-    padding: "40px 48px",
-    maxWidth: 760,
-  },
-  logo: {
-    padding: "0 24px 32px",
-    borderBottom: "1px solid #1a1a1a",
-    marginBottom: 8,
-  },
-  logoTitle: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: "#fff",
-    margin: 0,
-    letterSpacing: "-0.02em",
-  },
-  logoSub: {
-    fontSize: 11,
-    color: "#333",
-    margin: "4px 0 0",
-    fontFamily: "monospace",
-  },
-  navItem: (active) => ({
-    display: "block",
-    width: "100%",
-    padding: "10px 24px",
-    background: active ? "#161616" : "transparent",
-    border: "none",
-    borderLeft: active ? "2px solid #fff" : "2px solid transparent",
-    color: active ? "#fff" : "#555",
-    fontSize: 13,
-    textAlign: "left",
-    cursor: "pointer",
-    letterSpacing: "-0.01em",
-  }),
-  pageTitle: {
-    fontSize: 20,
-    fontWeight: 600,
-    color: "#fff",
-    margin: "0 0 4px",
-    letterSpacing: "-0.03em",
-  },
-  pageSub: {
-    fontSize: 12,
-    color: "#3a3a3a",
-    margin: "0 0 32px",
-    fontFamily: "monospace",
-  },
-  input: {
-    width: "100%",
-    background: "#0f0f0f",
-    border: "1px solid #1e1e1e",
-    borderRadius: 6,
-    color: "#d0d0d0",
-    padding: "10px 14px",
-    fontSize: 13,
-    fontFamily: "inherit",
-    boxSizing: "border-box",
-    outline: "none",
-  },
-  textarea: {
-    width: "100%",
-    height: 100,
-    background: "#0f0f0f",
-    border: "1px solid #1e1e1e",
-    borderRadius: 6,
-    color: "#d0d0d0",
-    padding: "10px 14px",
-    fontSize: 13,
-    fontFamily: "inherit",
-    boxSizing: "border-box",
-    resize: "vertical",
-    outline: "none",
-  },
-  select: {
-    background: "#0f0f0f",
-    border: "1px solid #1e1e1e",
-    borderRadius: 6,
-    color: "#d0d0d0",
-    padding: "10px 14px",
-    fontSize: 13,
-    fontFamily: "inherit",
-    outline: "none",
-  },
-  btn: {
-    padding: "10px 20px",
-    background: "#fff",
-    border: "none",
-    borderRadius: 6,
-    color: "#000",
-    fontSize: 13,
-    fontWeight: 500,
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  btnGhost: {
-    padding: "6px 12px",
-    background: "transparent",
-    border: "1px solid #1e1e1e",
-    borderRadius: 4,
-    color: "#555",
-    fontSize: 11,
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  btnDanger: {
-    padding: "6px 12px",
-    background: "transparent",
-    border: "1px solid #2a1a1a",
-    borderRadius: 4,
-    color: "#553333",
-    fontSize: 11,
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  card: {
-    background: "#0f0f0f",
-    border: "1px solid #1a1a1a",
-    borderRadius: 8,
-    padding: "16px 20px",
-    marginBottom: 8,
-  },
-  label: {
-    fontSize: 11,
-    color: "#333",
-    marginBottom: 6,
-    display: "block",
-    fontFamily: "monospace",
-  },
-  field: {
-    marginBottom: 16,
-  },
-  stat: {
-    background: "#0f0f0f",
-    border: "1px solid #1a1a1a",
-    borderRadius: 8,
-    padding: "20px 24px",
-    marginBottom: 8,
-  },
-  statLabel: {
-    fontSize: 11,
-    color: "#333",
-    margin: "0 0 6px",
-    fontFamily: "monospace",
-  },
-  statValue: {
-    fontSize: 13,
-    color: "#888",
-    margin: 0,
-  },
-  success: {
-    fontSize: 12,
-    color: "#2a4a2a",
-    fontFamily: "monospace",
-    marginTop: 8,
-  }
+const categoryColors = {
+  passwords: "#1a2a1a",
+  notes: "#1a1a2a",
+  personal: "#2a1a1a",
+  financial: "#2a2a1a",
+  general: "#1e1e1e"
 }
 
 export default function App() {
@@ -194,190 +25,198 @@ export default function App() {
   const [privateStats, setPrivateStats] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    fetchRecords()
-    fetchStats()
-  }, [])
+  useEffect(() => { fetchRecords(); fetchStats() }, [])
 
   async function fetchRecords() {
-    try {
-      const res = await axios.get(`${API}/records`)
-      setRecords(res.data.records)
-    } catch {}
+    try { const r = await axios.get(`${API}/records`); setRecords(r.data.records) } catch {}
   }
-
   async function fetchStats() {
-    try {
-      const res = await axios.get(`${API}/stats`)
-      setVaultStats(res.data)
-    } catch {}
+    try { const r = await axios.get(`${API}/stats`); setVaultStats(r.data) } catch {}
   }
-
   async function handleStore() {
     if (!storeData.trim()) return
     setLoading(true)
     try {
-      const res = await axios.post(`${API}/store`, { data: storeData, category: storeCategory })
-      setStoreMsg(`stored — id ${res.data.id}`)
-      setStoreData("")
-      fetchRecords()
-      fetchStats()
-    } catch { setStoreMsg("error storing record") }
+      const r = await axios.post(`${API}/store`, { data: storeData, category: storeCategory })
+      setStoreMsg(`stored — id ${r.data.id}`)
+      setStoreData(""); fetchRecords(); fetchStats()
+    } catch { setStoreMsg("error") }
     setLoading(false)
   }
-
   async function handleDelete(id) {
-    try {
-      await axios.delete(`${API}/records/${id}`)
-      fetchRecords()
-      fetchStats()
-    } catch {}
+    try { await axios.delete(`${API}/records/${id}`); fetchRecords(); fetchStats() } catch {}
   }
-
   async function handleSearch() {
     if (!searchKeyword.trim()) return
     setLoading(true)
-    const res = await axios.post(`${API}/search`, { keyword: searchKeyword, epsilon })
-    setSearchResults(res.data)
-    setLoading(false)
+    const r = await axios.post(`${API}/search`, { keyword: searchKeyword, epsilon })
+    setSearchResults(r.data); setLoading(false)
   }
-
   async function handlePrivateStats() {
     setLoading(true)
-    const res = await axios.post(`${API}/private-stats`, { epsilon })
-    setPrivateStats(res.data)
-    setLoading(false)
+    const r = await axios.post(`${API}/private-stats`, { epsilon })
+    setPrivateStats(r.data); setLoading(false)
   }
 
   return (
-    <div style={s.app}>
-      <div style={s.sidebar}>
-        <div style={s.logo}>
-          <p style={s.logoTitle}>Vault</p>
-          <p style={s.logoSub}>AES-256-GCM + DP</p>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#111113", color: "#e0e0e0", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+
+      <div style={{ width: 220, background: "#0d0d0f", borderRight: "1px solid #1f1f22", padding: "32px 0", position: "fixed", top: 0, left: 0, height: "100vh", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "0 24px 24px", borderBottom: "1px solid #1f1f22", marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#2d5a2d" }} />
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#f0f0f0", letterSpacing: "-0.01em" }}>Private Vault</span>
+          </div>
+          <div style={{ fontSize: 11, color: "#444", fontFamily: "monospace" }}>AES-256-GCM + DP</div>
           {vaultStats && (
-            <p style={{ ...s.logoSub, marginTop: 8 }}>{vaultStats.total_records} records</p>
+            <div style={{ marginTop: 12, padding: "8px 12px", background: "#141416", borderRadius: 6, border: "1px solid #1f1f22" }}>
+              <div style={{ fontSize: 11, color: "#555" }}>records</div>
+              <div style={{ fontSize: 20, fontWeight: 600, color: "#e0e0e0", marginTop: 2 }}>{vaultStats.total_records}</div>
+            </div>
           )}
         </div>
-        {["store", "records", "search", "privacy"].map(t => (
-          <button key={t} style={s.navItem(tab === t)} onClick={() => setTab(t)}>{t}</button>
-        ))}
+        <nav style={{ padding: "8px 12px" }}>
+          {["store", "records", "search", "privacy"].map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{
+              display: "flex", alignItems: "center", gap: 10, width: "100%",
+              padding: "9px 12px", marginBottom: 2,
+              background: tab === t ? "#1a1a1e" : "transparent",
+              border: "none", borderRadius: 6,
+              color: tab === t ? "#e0e0e0" : "#555",
+              fontSize: 13, textAlign: "left", cursor: "pointer", fontFamily: "inherit"
+            }}>
+              <span style={{ fontSize: 15 }}>
+                {t === "store" ? "+" : t === "records" ? "≡" : t === "search" ? "⌕" : "◎"}
+              </span>
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
+        </nav>
       </div>
 
-      <div style={s.main}>
+      <div style={{ marginLeft: 220, flex: 1, padding: "48px 56px", maxWidth: 780, textAlign: "left" }}>
 
         {tab === "store" && (
-          <>
-            <p style={s.pageTitle}>Store</p>
-            <p style={s.pageSub}>encrypted before writing to disk</p>
-            <div style={s.field}>
-              <label style={s.label}>data</label>
-              <textarea style={s.textarea} value={storeData}
-                onChange={e => setStoreData(e.target.value)}
-                placeholder="enter data to encrypt..." />
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: "#f0f0f0", margin: "0 0 4px", letterSpacing: "-0.02em" }}>Store</h1>
+            
+            <p style={{ fontSize: 13, color: "#555", margin: "0 0 32px", fontFamily: "monospace" }}>AES-256-GCM encrypted before writing to disk</p>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: 12, color: "#666", marginBottom: 8, fontWeight: 500 }}>Data</label>
+              <textarea value={storeData} onChange={e => setStoreData(e.target.value)}
+                placeholder="Enter data to encrypt and store..."
+                style={{ width: "100%", height: 120, background: "#0d0d0f", border: "1px solid #222226", borderRadius: 8, color: "#e0e0e0", padding: "12px 16px", fontSize: 14, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }} />
             </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <div style={s.field}>
-                <label style={s.label}>category</label>
-                <select style={s.select} value={storeCategory}
-                  onChange={e => setStoreCategory(e.target.value)}>
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-end" }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, color: "#666", marginBottom: 8, fontWeight: 500 }}>Category</label>
+                <select value={storeCategory} onChange={e => setStoreCategory(e.target.value)}
+                  style={{ background: "#0d0d0f", border: "1px solid #222226", borderRadius: 8, color: "#e0e0e0", padding: "10px 14px", fontSize: 13, fontFamily: "inherit", outline: "none" }}>
                   {categories.map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
-              <button style={{ ...s.btn, marginTop: 8 }} onClick={handleStore} disabled={loading}>
-                {loading ? "encrypting..." : "encrypt + store"}
+              <button onClick={handleStore} disabled={loading}
+                style={{ padding: "10px 20px", background: "#1a1a1e", border: "1px solid #2a2a30", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                {loading ? "Encrypting..." : "Encrypt + Store"}
               </button>
             </div>
-            {storeMsg && <p style={s.success}>{storeMsg}</p>}
-          </>
+            {storeMsg && <p style={{ fontSize: 12, color: "#3a6a3a", marginTop: 12, fontFamily: "monospace" }}>{storeMsg}</p>}
+          </div>
         )}
 
         {tab === "records" && (
-          <>
-            <p style={s.pageTitle}>Records</p>
-            <p style={s.pageSub}>decrypted — local only</p>
-            {records.length === 0 ? (
-              <p style={{ color: "#2a2a2a", fontSize: 13 }}>no records yet</p>
-            ) : records.map(r => (
-              <div key={r.id} style={s.card}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: "#f0f0f0", margin: "0 0 4px", letterSpacing: "-0.02em" }}>Records</h1>
+            <p style={{ fontSize: 13, color: "#555", margin: "0 0 32px", fontFamily: "monospace" }}>Decrypted in memory, never written as plaintext</p>
+            {records.length === 0
+              ? <p style={{ color: "#333", fontSize: 14 }}>No records stored yet.</p>
+              : records.map(r => (
+                <div key={r.id} style={{ background: categoryColors[r.category] || "#1e1e1e", border: "1px solid #222226", borderRadius: 10, padding: "16px 20px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", gap: 12, marginBottom: 8 }}>
-                      <span style={{ fontSize: 11, color: "#2a2a2a", fontFamily: "monospace" }}>#{r.id}</span>
-                      <span style={{ fontSize: 11, color: "#2a2a2a", fontFamily: "monospace" }}>{r.category}</span>
-                      <span style={{ fontSize: 11, color: "#2a2a2a", fontFamily: "monospace" }}>{r.timestamp.split("T")[0]}</span>
+                      <span style={{ fontSize: 11, color: "#555", fontFamily: "monospace" }}>#{r.id}</span>
+                      <span style={{ fontSize: 11, color: "#555", background: "#111113", padding: "2px 8px", borderRadius: 4, border: "1px solid #1f1f22" }}>{r.category}</span>
+                      <span style={{ fontSize: 11, color: "#444", fontFamily: "monospace" }}>{r.timestamp.split("T")[0]}</span>
                     </div>
-                    <p style={{ margin: 0, fontSize: 13, color: "#ccc", lineHeight: 1.5 }}>{r.data}</p>
+                    <p style={{ margin: 0, fontSize: 14, color: "#d0d0d0", lineHeight: 1.6 }}>{r.data}</p>
                   </div>
-                  <button style={s.btnDanger} onClick={() => handleDelete(r.id)}>delete</button>
+                  <button onClick={() => handleDelete(r.id)}
+                    style={{ background: "transparent", border: "1px solid #2a1a1a", borderRadius: 6, color: "#4a2a2a", fontSize: 11, cursor: "pointer", fontFamily: "inherit", padding: "4px 10px", marginLeft: 16 }}>
+                    Delete
+                  </button>
                 </div>
-              </div>
-            ))}
-          </>
+              ))
+            }
+          </div>
         )}
 
         {tab === "search" && (
-          <>
-            <p style={s.pageTitle}>Search</p>
-            <p style={s.pageSub}>result count is differentially private</p>
-            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              <input style={{ ...s.input, flex: 1 }} value={searchKeyword}
-                onChange={e => setSearchKeyword(e.target.value)}
-                placeholder="keyword..." />
-              <button style={s.btn} onClick={handleSearch}>search</button>
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: "#f0f0f0", margin: "0 0 4px", letterSpacing: "-0.02em" }}>Search</h1>
+            <p style={{ fontSize: 13, color: "#555", margin: "0 0 32px", fontFamily: "monospace" }}>Result count is differentially private</p>
+            <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+              <input value={searchKeyword} onChange={e => setSearchKeyword(e.target.value)}
+                placeholder="Search keyword..."
+                style={{ flex: 1, background: "#0d0d0f", border: "1px solid #222226", borderRadius: 8, color: "#e0e0e0", padding: "10px 14px", fontSize: 14, fontFamily: "inherit", outline: "none" }} />
+              <button onClick={handleSearch}
+                style={{ padding: "10px 20px", background: "#1a1a1e", border: "1px solid #2a2a30", borderRadius: 8, color: "#e0e0e0", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>
+                Search
+              </button>
             </div>
             {searchResults && (
-              <>
-                <p style={{ fontSize: 11, color: "#2a2a2a", fontFamily: "monospace", marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 12, color: "#555", fontFamily: "monospace", marginBottom: 16, padding: "10px 14px", background: "#0d0d0f", borderRadius: 8, border: "1px solid #1f1f22" }}>
                   true: {searchResults.true_count} | private: {searchResults.private_count} | epsilon: {epsilon}
-                </p>
+                </div>
                 {searchResults.matches.map(r => (
-                  <div key={r.id} style={s.card}>
-                    <span style={{ fontSize: 11, color: "#2a2a2a", fontFamily: "monospace" }}>#{r.id} [{r.category}]  </span>
-                    <span style={{ fontSize: 13, color: "#ccc" }}>{r.data}</span>
+                  <div key={r.id} style={{ background: "#1a1a1e", border: "1px solid #222226", borderRadius: 8, padding: "12px 16px", marginBottom: 8 }}>
+                    <span style={{ fontSize: 11, color: "#555", fontFamily: "monospace" }}>#{r.id} [{r.category}] &nbsp;</span>
+                    <span style={{ fontSize: 14, color: "#d0d0d0" }}>{r.data}</span>
                   </div>
                 ))}
-              </>
+              </div>
             )}
-          </>
+          </div>
         )}
 
         {tab === "privacy" && (
-          <>
-            <p style={s.pageTitle}>Privacy</p>
-            <p style={s.pageSub}>differentially private vault statistics</p>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
-              <span style={{ fontSize: 11, color: "#333", fontFamily: "monospace" }}>epsilon</span>
-              <input type="range" min="0.1" max="10" step="0.1" value={epsilon}
-                onChange={e => setEpsilon(parseFloat(e.target.value))}
-                style={{ flex: 1 }} />
-              <span style={{ fontSize: 12, color: "#555", minWidth: 28, fontFamily: "monospace" }}>{epsilon}</span>
-              <button style={s.btn} onClick={handlePrivateStats}>query</button>
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: "#f0f0f0", margin: "0 0 4px", letterSpacing: "-0.02em" }}>Privacy</h1>
+            <p style={{ fontSize: 13, color: "#555", margin: "0 0 32px", fontFamily: "monospace" }}>Laplace mechanism — noise = sensitivity / epsilon</p>
+            <div style={{ background: "#0d0d0f", border: "1px solid #222226", borderRadius: 10, padding: "20px 24px", marginBottom: 24 }}>
+              <label style={{ display: "block", fontSize: 12, color: "#666", marginBottom: 12, fontWeight: 500 }}>Privacy Budget (epsilon)</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <span style={{ fontSize: 11, color: "#444", fontFamily: "monospace" }}>private</span>
+                <input type="range" min="0.1" max="10" step="0.1" value={epsilon}
+                  onChange={e => setEpsilon(parseFloat(e.target.value))}
+                  style={{ flex: 1, accentColor: "#555" }} />
+                <span style={{ fontSize: 11, color: "#444", fontFamily: "monospace" }}>accurate</span>
+                <span style={{ fontSize: 14, color: "#e0e0e0", fontFamily: "monospace", fontWeight: 600, minWidth: 28 }}>{epsilon}</span>
+              </div>
+              <button onClick={handlePrivateStats}
+                style={{ marginTop: 16, padding: "10px 20px", background: "#1a1a1e", border: "1px solid #2a2a30", borderRadius: 8, color: "#e0e0e0", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>
+                Run Query
+              </button>
             </div>
-            <p style={{ fontSize: 11, color: "#222", fontFamily: "monospace", marginBottom: 24 }}>
-              lower epsilon = stronger privacy, higher noise
-            </p>
             {privateStats && (
-              <>
-                <div style={s.stat}>
-                  <p style={s.statLabel}>total records</p>
-                  <p style={s.statValue}>
-                    true: {privateStats.total.true_count} &nbsp;|&nbsp;
-                    private: {privateStats.total.private_count} &nbsp;|&nbsp;
-                    noise: {privateStats.total.noise_added}
-                  </p>
+              <div>
+                <div style={{ background: "#0d0d0f", border: "1px solid #222226", borderRadius: 10, padding: "16px 20px", marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, color: "#666", marginBottom: 6 }}>Total records</div>
+                  <div style={{ fontSize: 13, color: "#888", fontFamily: "monospace" }}>
+                    true: {privateStats.total.true_count} | private: {privateStats.total.private_count} | noise: {privateStats.total.noise_added}
+                  </div>
                 </div>
                 {Object.entries(privateStats.distribution).map(([cat, stats]) => (
-                  <div key={cat} style={s.stat}>
-                    <p style={s.statLabel}>{cat}</p>
-                    <p style={s.statValue}>
-                      true: {stats.true_count} &nbsp;|&nbsp; private: {stats.private_count}
-                    </p>
+                  <div key={cat} style={{ background: "#0d0d0f", border: "1px solid #222226", borderRadius: 10, padding: "16px 20px", marginBottom: 8 }}>
+                    <div style={{ fontSize: 12, color: "#666", marginBottom: 6 }}>{cat}</div>
+                    <div style={{ fontSize: 13, color: "#888", fontFamily: "monospace" }}>
+                      true: {stats.true_count} | private: {stats.private_count}
+                    </div>
                   </div>
                 ))}
-              </>
+              </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
