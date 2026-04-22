@@ -12,9 +12,13 @@ can be shared without revealing individual records.
 
 ## Architecture
 crypto.py      - AES-256-GCM encryption and decryption
+
 vault.py       - local encrypted storage in JSON
+
 query.py       - differentially private queries using Laplace mechanism
+
 server.py      - FastAPI backend connecting vault to frontend
+
 frontend/      - React dashboard for store, retrieve, search, privacy
 
 ## Security Design
