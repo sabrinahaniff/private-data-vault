@@ -83,10 +83,10 @@ function App() {
 
         {/* Header */}
         <div style={{ marginBottom: 40 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 500, color: "#fff", margin: 0 }}>
-            Private Data Vault
-          </h1>
-          <p style={{ fontSize: 12, color: "#555", margin: "6px 0 0" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 500, color: "#fff", margin: 0, fontFamily: "system-ui, sans-serif" }}>
+          Private Data Vault
+            </h1>
+          <p style={{ fontSize: 12, color: "#555", margin: "6px 0 0", fontFamily: "system-ui, sans-serif" }}>
             AES-256-GCM encryption + differential privacy
           </p>
           {vaultStats && (
