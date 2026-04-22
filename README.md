@@ -4,6 +4,9 @@ A local-first encrypted data vault combining AES-256-GCM cryptography
 with differential privacy. All data stays on your machine with no server, 
 no cloud, no third parties.
 
+<img width="1463" height="660" alt="image" src="https://github.com/user-attachments/assets/575d1fd1-d661-4964-8c61-5339603888da" />
+
+
 ## What it does
 
 Store sensitive data encrypted at rest using AES-256-GCM. Query vault 
