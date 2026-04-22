@@ -7,21 +7,17 @@ VAULT_FILE = "vault_data.json"
 KEY_FILE = "vault.key"
 
 def initialize_vault():
-    # create a new vault with a fresh encryption key
-    # only call this once when setting up for the first time
-    if os.path.exists(KEY_FILE):
-        print("Vault already exists. Use load_vault() instead.")
-        return
+    # create key if it doesn't exist
+    if not os.path.exists(KEY_FILE):
+        key = generate_key()
+        save_key(key, KEY_FILE)
     
-    key = generate_key()
-    save_key(key, KEY_FILE)
+    # always create vault file if it doesn't exist
+    if not os.path.exists(VAULT_FILE):
+        with open(VAULT_FILE, 'w') as f:
+            json.dump({"records": []}, f)
     
-    # create empty vault file
-    with open(VAULT_FILE, 'w') as f:
-        json.dump({"records": []}, f)
-    
-    print("Vault initialized successfully.")
-    print("Keep vault.key safe! Losing it means losing all your data.")
+    print("Vault ready.")
 
 def load_vault():
     # load existing vault

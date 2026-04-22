@@ -1,11 +1,16 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from vault import initialize_vault, store_record, retrieve_record, retrieve_all, get_vault_stats
 from query import private_count, private_category_distribution, search_records
 import os
+from vault import initialize_vault, store_record, retrieve_record, retrieve_all, get_vault_stats
+
+# always initialize vault on startup if files don't exist
+if not os.path.exists("vault.key") or not os.path.exists("vault_data.json"):
+    initialize_vault()
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -68,3 +73,14 @@ def private_stats(req: QueryRequest):
 def search(req: SearchRequest):
     results = search_records(req.keyword, req.epsilon)
     return results
+
+@app.delete("/records/{record_id}")
+def delete_record(record_id: int):
+    vault, key = load_vault()
+    original_length = len(vault["records"])
+    vault["records"] = [r for r in vault["records"] if r["id"] != record_id]
+    if len(vault["records"]) == original_length:
+        raise HTTPException(status_code=404, detail="Record not found")
+    with open(VAULT_FILE, 'w') as f:
+        json.dump(vault, f, indent=2)
+    return {"success": True}
