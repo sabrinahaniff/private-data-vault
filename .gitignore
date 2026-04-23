@@ -5,4 +5,4 @@ venv/
 vault_data/
 *.key
 vault_data.json
-vault.key
+vault.key.DS_Store
